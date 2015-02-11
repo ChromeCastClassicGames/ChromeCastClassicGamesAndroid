@@ -15,7 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_weight="1"
-        android:text="@string/create_new_game"/>
+        android:text="@string/create_new_game"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/join_existing_game_button"
@@ -23,7 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_weight="1"
-        android:text="@string/join_existing_game"/>
+        android:text="@string/join_existing_game"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/continue_game_button"
@@ -31,14 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_weight="1"
-        android:text="@string/continue_game"/>
-
-    <Button
-        android:id="@+id/settings_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:text="@string/settings"/>
+        android:text="@string/continue_game"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"/>
 
 </LinearLayout>
