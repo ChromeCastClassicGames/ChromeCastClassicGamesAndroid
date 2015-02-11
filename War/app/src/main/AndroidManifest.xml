@@ -17,6 +17,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CreateNewGame"
+            android:label="@string/title_activity_create_new_game">
+        </activity>
+        <activity
+            android:name=".JoinExistingGame"
+            android:label="@string/title_activity_join_existing_game">
+        </activity>
+        <activity
+            android:name=".ContinueGame"
+            android:label="@string/title_activity_continue_game">
+        </activity>
     </application>
 
 </manifest>

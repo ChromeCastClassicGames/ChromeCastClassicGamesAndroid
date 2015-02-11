@@ -2,7 +2,14 @@
 <resources>
 
     <string name="app_name">War</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="create_new_game">Create New Game</string>
+    <string name="join_existing_game">Join Existing Game</string>
+    <string name="continue_game">Continue Game</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_create_new_game">CreateNewGame</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_join_existing_game">JoinExistingGame</string>
+    <string name="title_activity_continue_game">ContinueGame</string>
 
 </resources>
