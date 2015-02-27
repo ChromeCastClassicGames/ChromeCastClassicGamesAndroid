@@ -3,6 +3,8 @@
     package="com.appspot.c_three_games_test.war"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -18,17 +20,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateNewGame"
-            android:label="@string/title_activity_create_new_game">
-        </activity>
-        <activity
-            android:name=".JoinExistingGame"
-            android:label="@string/title_activity_join_existing_game">
-        </activity>
-        <activity
             android:name=".ContinueGame"
             android:label="@string/title_activity_continue_game">
         </activity>
+        <activity
+            android:name=".Game"
+            android:label="@string/title_activity_game">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
     </application>
 
 </manifest>

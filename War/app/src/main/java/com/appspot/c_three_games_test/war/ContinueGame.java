@@ -11,7 +11,7 @@ public class ContinueGame extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.continue_game);
+        setContentView(R.layout.activity_continue_game);
     }
 
 

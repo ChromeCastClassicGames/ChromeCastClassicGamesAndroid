@@ -6,19 +6,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class JoinExistingGame extends ActionBarActivity {
+public class Game extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.join_existing_game);
+        setContentView(R.layout.activity_game);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_join_existing_game, menu);
+        getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
 
