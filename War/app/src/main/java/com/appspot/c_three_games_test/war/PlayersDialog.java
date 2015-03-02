@@ -8,9 +8,9 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
-public class GameCodeDialog extends DialogFragment {
+
+public class PlayersDialog extends DialogFragment {
 
     DialogListener mListener;
 
@@ -22,7 +22,7 @@ public class GameCodeDialog extends DialogFragment {
             mListener = (DialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement DialogListener");
+            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
         }
     }
 
@@ -30,9 +30,9 @@ public class GameCodeDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final AlertDialog dialog = builder.setTitle(R.string.enter_code)
-                .setView(inflater.inflate(R.layout.game_code_dialog, null))
-                .setPositiveButton(R.string.next, null)
+        final AlertDialog dialog = builder.setTitle(R.string.players)
+                .setView(inflater.inflate(R.layout.players_dialog, null))
+                .setPositiveButton(R.string.start_game, null)
                 .create();
         return dialog;
     }
@@ -42,22 +42,21 @@ public class GameCodeDialog extends DialogFragment {
         super.onStart();
         final AlertDialog dialog = (AlertDialog) getDialog();
         if (dialog != null) {
+            mListener.onDialogOnCreate(PlayersDialog.this);
             Button positiveButton = (Button) dialog.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditText editTextGameCode = (EditText) dialog.findViewById(R.id.game_code);
-                    String gameCode = editTextGameCode.getText().toString();
-                    if (gameCode.length() == 4) {
-                        mListener.onDialogSetGameCode(GameCodeDialog.this, gameCode);
-                        dismiss();
-                    }
+                    //todo: start game
+                    mListener.onDialogStartGameClicked(PlayersDialog.this);
                 }
             });
         }
     }
 
     public interface DialogListener {
-        public void onDialogSetGameCode(DialogFragment dialog, String gameCode);
+        public void onDialogOnCreate(DialogFragment dialog);
+
+        public void onDialogStartGameClicked(DialogFragment dialog);
     }
 }

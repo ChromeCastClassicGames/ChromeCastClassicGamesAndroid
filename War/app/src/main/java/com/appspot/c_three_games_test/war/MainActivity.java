@@ -13,14 +13,15 @@ import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity implements NameDialog.DialogListener, GameCodeDialog.DialogListener, CodeSelectionDialog.DialogListener, GameSelectionDialog.DialogListener {
 
-    String name;
-    String gameCode;
-    Integer dialog;
+    War.CreateGame createGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createGame = new War.CreateGame(MainActivity.this);
+        //TODO: add gcm support
 
         Button new_game_button = (Button) findViewById(R.id.new_game_button);
         new_game_button.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +35,7 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
         continue_game_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ContinueGame.class);
+                Intent intent = new Intent(v.getContext(), ContinueGameActivity.class);
                 startActivity(intent);
             }
         });
@@ -64,7 +65,7 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
 
     @Override
     public void onDialogSetName(DialogFragment dialog, String name) {
-        this.name = name;
+        createGame.setName(name);
         Log.d("WAR", "name: " + name);
         showGameSelectionDialog();
     }
@@ -74,10 +75,7 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
         Log.d("WAR", "new game: " + selection);
         switch (selection) {
             case 0: // new game
-                Intent intent = new Intent(this.getApplicationContext(), Game.class);
-                intent.putExtra("name", name);
-                intent.putExtra("new game", true);
-                startActivity(intent);
+                createGame.execute();
                 break;
             case 1: // join existing game
                 showGameCodeSelectionDialog();
@@ -108,24 +106,18 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String contents = intent.getStringExtra("SCAN_RESULT");
-                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-                // Handle successful scan
-            } else if (resultCode == RESULT_CANCELED) {
-                // Handle cancel
+                String gameId = intent.getStringExtra("SCAN_RESULT");
+                createGame.setGameId(Long.parseLong(gameId));
+                createGame.execute();
             }
+            //todo: handle canceled case
         }
     }
 
     @Override
-    public void onDialogSetGameCode(DialogFragment dialog, String gameCode) {
-        Log.d("WAR", "game code: " + gameCode);
-        this.gameCode = gameCode;
-        Intent intent = new Intent(this.getApplicationContext(), Game.class);
-        intent.putExtra("name", name);
-        intent.putExtra("join game", true);
-        intent.putExtra("game code", gameCode);
-        startActivity(intent);
+    public void onDialogSetGameCode(DialogFragment dialog, final String gameCode) {
+        createGame.setGameCode(gameCode);
+        createGame.execute();
     }
 
     private void showNameDialog() {

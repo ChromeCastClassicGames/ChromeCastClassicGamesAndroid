@@ -20,5 +20,8 @@
     <string name="fire">Fire</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_game">Game</string>
-
+    <string name="please_wait">Please Wait&#8230;</string>
+    <string name="loading_game">Loading Game</string>
+    <string name="title_activity_players_dialog">PlayersDialog</string>
+    <string name="players">Players</string>
 </resources>

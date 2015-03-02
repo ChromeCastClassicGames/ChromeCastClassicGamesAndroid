@@ -20,17 +20,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ContinueGame"
+            android:name=".ContinueGameActivity"
             android:label="@string/title_activity_continue_game">
         </activity>
         <activity
-            android:name=".Game"
+            android:name=".GameActivity"
             android:label="@string/title_activity_game">
         </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
+
+        <activity
+            android:name=".PlayersDialog"
+            android:label="@string/title_activity_players_dialog">
+        </activity>
     </application>
 
 </manifest>
