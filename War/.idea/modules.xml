@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../ChromeCastClassicGamesGAE/ChromeCastClassicGamesGAE.iml" filepath="$PROJECT_DIR$/../../ChromeCastClassicGamesGAE/ChromeCastClassicGamesGAE.iml" />
       <module fileurl="file://$PROJECT_DIR$/War.iml" filepath="$PROJECT_DIR$/War.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
