@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="new_game_selection">
+        <item>New Game</item>
+        <item>Join Existing Game</item>
+    </string-array>
+    <string-array name="code_selection">
+        <item>Enter Game Code</item>
+        <item>Scan QR Code</item>
+    </string-array>
+</resources>
