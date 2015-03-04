@@ -7,13 +7,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
 public class GameActivity extends ActionBarActivity implements PlayersDialog.DialogListener {
 
+    private static final String TAG = "WAR";
     War.PlayGame war;
 
     @Override
@@ -22,14 +24,16 @@ public class GameActivity extends ActionBarActivity implements PlayersDialog.Dia
         Intent intent = getIntent();
         setContentView(R.layout.activity_game);
 
-        TextView gameIdText = (TextView) findViewById(R.id.gameId);
-        TextView playerIdText = (TextView) findViewById(R.id.playerId);
-
         Long gameId = intent.getLongExtra("gameId", -1);
         Long playerId = intent.getLongExtra("playerId", -1);
 
-        gameIdText.setText(gameId.toString());
-        playerIdText.setText(playerId.toString());
+        Button playCardButton = (Button) findViewById(R.id.play_card_button);
+        playCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                war.playCard();
+            }
+        });
 
         war = new War.PlayGame(GameActivity.this);
         war.setGameId(gameId);
@@ -69,7 +73,11 @@ public class GameActivity extends ActionBarActivity implements PlayersDialog.Dia
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

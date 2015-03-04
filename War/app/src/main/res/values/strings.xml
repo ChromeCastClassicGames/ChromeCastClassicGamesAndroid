@@ -24,4 +24,7 @@
     <string name="loading_game">Loading Game</string>
     <string name="title_activity_players_dialog">PlayersDialog</string>
     <string name="players">Players</string>
+    <string name="project_id">719446873078</string>
+    <string name="players_dialog_broadcast">PlayersDialogBroadcast</string>
+    <string name="play_card">Play Card</string>
 </resources>

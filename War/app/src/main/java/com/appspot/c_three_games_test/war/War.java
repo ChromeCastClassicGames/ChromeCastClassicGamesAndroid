@@ -11,6 +11,7 @@ import android.util.Log;
 import com.appspot.c_three_games_test.warAPI.WarAPI;
 import com.appspot.c_three_games_test.warAPI.model.Game;
 import com.appspot.c_three_games_test.warAPI.model.Player;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.gson.GsonFactory;
 
@@ -27,71 +28,84 @@ public class War {
         warState = new WarState();
     }
 
-    private static void createNewGame() throws IOException {
-        Game game = warAPI.createGame().execute();
-        warState.setGame(game);
-    }
-
-    private static void findGameByGameCode(String gameCode) throws IOException {
-        Game game = warAPI.getGameByCode(gameCode).execute();
-        warState.setGame(game);
-    }
-
-    private static void findGameByGameId(Long gameId) throws IOException {
-        Game game = warAPI.getGame(gameId).execute();
-        warState.setGame(game);
-    }
-
-    private static void joinGame(String name, String gcm) throws IOException {
-        Player player = null;
-        if (warState.getGame() != null) {
-            player = warAPI.joinGame(warState.getGame().getId(), name).execute();
-        }
-        if ((warState.getGame() != null) && (player != null)) {
-            player = warAPI.setPlayerRegId(warState.getGame().getId(), player.getId(), gcm).execute();
-        }
-        warState.setPlayer(player);
-    }
-
-    private static void findPlayerById(Long playerId) throws IOException {
-        Player player = null;
-        if (warState.getGame() != null) {
-            player = warAPI.getPlayer(warState.getGame().getId(), playerId).execute();
-        }
-        warState.setPlayer(player);
-    }
-
-    private static void findPlayers() throws IOException {
-        List<Player> players = new ArrayList<>();
-        if (warState.getGame() != null) {
-            players = warAPI.getPlayers(warState.getGame().getId()).execute().getItems();
-            warState.setPlayers(players);
-        }
-    }
-
-    private static boolean isGameStarted() {
-        String gameState;
-        if (warState.getGame() != null) {
-            gameState = warState.getGame().getState();
-            switch (gameState) {
-                case "PLAYING":
-                case "EVALUATING":
-                case "ROUNDOVER":
-                case "OVER":
-                    return true;
-                case "JOINING":
-                default:
-                    return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    private static void startGame() throws IOException {
-        if (warState.getGame() != null) {
-            Game game = warAPI.startGame(warState.getGame().getId()).execute();
+    private static class API extends War {
+        private static void createNewGame() throws IOException {
+            Game game = warAPI.createGame().execute();
             warState.setGame(game);
+        }
+
+        private static void findGameByGameCode(String gameCode) throws IOException {
+            Game game = warAPI.getGameByCode(gameCode).execute();
+            warState.setGame(game);
+        }
+
+        private static void findGameByGameId(Long gameId) throws IOException {
+            Game game = warAPI.getGame(gameId).execute();
+            warState.setGame(game);
+        }
+
+        private static void joinGame(String name) throws IOException {
+            Player player = null;
+            if (warState.getGame() != null) {
+                player = warAPI.joinGame(warState.getGame().getId(), name).execute();
+            }
+            warState.setPlayer(player);
+        }
+
+        private static void setPlayerRegId(String gcmId) throws IOException {
+            if ((warState.getGame() != null) && (warState.getPlayer() != null)) {
+                Player player = warAPI.setPlayerRegId(warState.getGame().getId(), warState.getPlayer().getId(), gcmId).execute();
+                warState.setPlayer(player);
+            }
+        }
+
+        private static void findPlayerById(Long playerId) throws IOException {
+            Player player = null;
+            if (warState.getGame() != null) {
+                player = warAPI.getPlayer(warState.getGame().getId(), playerId).execute();
+            }
+            warState.setPlayer(player);
+        }
+
+        private static void getPlayers() throws IOException {
+            List<Player> players = null;
+            if (warState.getGame() != null) {
+                players = warAPI.getPlayers(warState.getGame().getId()).execute().getItems();
+                warState.setPlayers(players);
+            }
+        }
+
+        private static boolean isGameStarted() {
+            String gameState;
+            if (warState.getGame() != null) {
+                gameState = warState.getGame().getState();
+                switch (gameState) {
+                    case "PLAYING":
+                    case "EVALUATING":
+                    case "ROUNDOVER":
+                    case "OVER":
+                        return true;
+                    case "JOINING":
+                    default:
+                        return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        private static void startGame() throws IOException {
+            if (warState.getGame() != null) {
+                Game game = warAPI.startGame(warState.getGame().getId()).execute();
+                warState.setGame(game);
+            }
+        }
+
+        private static void playCard() throws IOException {
+            if ((warState.getGame() != null) && (warState.getPlayer() != null)) {
+                Player player = warAPI.playCard(warState.getGame().getId(), warState.getPlayer().getId()).execute();
+                warState.setPlayer(player);
+            }
         }
     }
 
@@ -136,23 +150,25 @@ public class War {
                 @Override
                 protected Void doInBackground(Void... params) {
                     try {
+                        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                        String gcmId = gcm.register(context.getString(R.string.project_id));
                         //create a new game, or find an existing with id or game code
                         if (gameId != null) {
-                            findGameByGameId(getGameId());
+                            API.findGameByGameId(getGameId());
                         } else if (!gameCode.isEmpty()) {
-                            findGameByGameCode(getGameCode());
+                            API.findGameByGameCode(getGameCode());
                         } else {
-                            createNewGame();
+                            API.createNewGame();
                         }
                         //join game
-                        joinGame(getName(), "");
+                        API.joinGame(getName());
+                        API.setPlayerRegId(gcmId);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     return null;
                 }
             }.execute();
-
         }
 
         public String getName() {
@@ -207,8 +223,9 @@ public class War {
                 @Override
                 protected void onPostExecute(Void aVoid) {
                     progressDialog.dismiss();
-                    if (!isGameStarted()) {
+                    if (!API.isGameStarted()) {
                         playersDialog = new PlayersDialog();
+                        playersDialog.setCancelable(false);
                         playersDialog.show(((FragmentActivity) context).getSupportFragmentManager(), "players");
                     }
                 }
@@ -216,9 +233,9 @@ public class War {
                 @Override
                 protected Void doInBackground(Void... params) {
                     try {
-                        findGameByGameId(gameId);
-                        findPlayerById(playerId);
-                        findPlayers();
+                        API.findGameByGameId(gameId);
+                        API.findPlayerById(playerId);
+                        API.getPlayers();
                         return null;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -233,7 +250,21 @@ public class War {
                 @Override
                 protected Void doInBackground(Void... params) {
                     try {
-                        War.startGame();
+                        API.startGame();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            }.execute();
+        }
+
+        public void playCard() {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    try {
+                        API.playCard();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -31,13 +31,13 @@ public class CodeSelectionDialog extends DialogFragment {
         final AlertDialog dialog = builder.setItems(R.array.code_selection, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mListener.onDialogCodeSelection(CodeSelectionDialog.this, which);
+                mListener.onDialogSelectGameCode(CodeSelectionDialog.this, which);
             }
         }).create();
         return dialog;
     }
 
     public interface DialogListener {
-        public void onDialogCodeSelection(DialogFragment dialog, int selection);
+        public void onDialogSelectGameCode(DialogFragment dialog, int selection);
     }
 }

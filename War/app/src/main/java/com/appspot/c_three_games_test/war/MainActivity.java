@@ -10,9 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 
 public class MainActivity extends ActionBarActivity implements NameDialog.DialogListener, GameCodeDialog.DialogListener, CodeSelectionDialog.DialogListener, GameSelectionDialog.DialogListener {
 
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = MainActivity.class.getName();
     War.CreateGame createGame;
 
     @Override
@@ -21,7 +26,6 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
         setContentView(R.layout.activity_main);
 
         createGame = new War.CreateGame(MainActivity.this);
-        //TODO: add gcm support
 
         Button new_game_button = (Button) findViewById(R.id.new_game_button);
         new_game_button.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +43,15 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
                 startActivity(intent);
             }
         });
+
+        // Check device for Play Services APK
+        checkPlayServices();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
     }
 
     @Override
@@ -66,13 +79,13 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
     @Override
     public void onDialogSetName(DialogFragment dialog, String name) {
         createGame.setName(name);
-        Log.d("WAR", "name: " + name);
+        Log.d(TAG, "name: " + name);
         showGameSelectionDialog();
     }
 
     @Override
     public void onDialogGameSelection(DialogFragment dialog, int selection) {
-        Log.d("WAR", "new game: " + selection);
+        Log.d(TAG, "new game: " + selection);
         switch (selection) {
             case 0: // new game
                 createGame.execute();
@@ -86,8 +99,8 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
     }
 
     @Override
-    public void onDialogCodeSelection(DialogFragment dialog, int selection) {
-        Log.d("WAR", "code selection: " + selection);
+    public void onDialogSelectGameCode(DialogFragment dialog, int selection) {
+        Log.d(TAG, "game code selection: " + selection);
         switch (selection) {
             case 0: //enter game code
                 showGameCodeDialog();
@@ -139,4 +152,20 @@ public class MainActivity extends ActionBarActivity implements NameDialog.Dialog
         DialogFragment newFragment = new GameCodeDialog();
         newFragment.show(getSupportFragmentManager(), "game code");
     }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
 }
